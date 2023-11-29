@@ -11,6 +11,19 @@ use App\Models\Barang;
 
 class BarangController extends Controller
 {
+
+    public function home()
+    {
+        $listBarang = Barang::all();
+        foreach ($listBarang as $key => $barang) {
+            $listBarang[$key]->totalHargaBarang = $barang->qty * $barang->harga_jual;
+            $listBarang[$key]->diskon = $this->hitungDiskon($listBarang[$key]->totalHargaBarang);
+            $potonganHarga = ($listBarang[$key]->diskon / 100) * $listBarang[$key]->totalHargaBarang;
+            $listBarang[$key]->hargaSetelahDiskon = $listBarang[$key]->totalHargaBarang - $potonganHarga;
+
+        }
+        return view ('home', ['listBarang' => $listBarang]);
+    }
     public function formInput()
     {
         return view('input_barang');
@@ -47,5 +60,40 @@ class BarangController extends Controller
     {
     return view('input_barang');
     }
+
+    private function hitungDiskon($totalHarga)
+    {
+        if ($totalHarga >= 500000) {
+            return 50;
+        } elseif ($totalHarga >= 200000) {
+            return 20;
+        } elseif ($totalHarga >= 100000) {
+            return 10;
+        }
+
+        return 0;
+    }
+    public function editForm($id)
+    {
+        $barang = Barang::find($id);
+        return view('edit', ['barang' => $barang]);
+    }
+
+    public function edit(Request $request, $id)
+    {
+
+        $barang = Barang::find($id);
+
+        if ($barang) {
+            $barang->kode_barang = $request->kode_barang;
+            $barang->nama_barang = $request->nama_barang;
+            $barang->jenis_varian = $request->jenis_varian;
+            $barang->qty = $request->qty;
+            $barang->harga_jual = $request->harga_jual;
+            $barang->save();
+            return redirect()->route('home');
+        }
+    }
+
 }
 
