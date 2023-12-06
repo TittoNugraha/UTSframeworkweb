@@ -49,12 +49,14 @@ class BarangController extends Controller
         $potongan_harga = ($diskon / 100) * $total_harga;
         $harga_setelah_diskon = $total_harga - $potongan_harga;
 
-        return view('hasil_input', [
-            'barang' => $barang,
-            'diskon' => $diskon,
-            'potongan_harga' => $potongan_harga,
-            'harga_setelah_diskon' => $harga_setelah_diskon,
-        ]);
+        return redirect()->route('home');
+
+        // return view('hasil_input', 
+        //     'barang' => $barang,
+        //     'diskon' => $diskon,
+        //     'potongan_harga' => $potongan_harga,
+        //     'harga_setelah_diskon' => $harga_setelah_diskon,
+        // ]);
     }
     public function index()
     {
@@ -94,6 +96,18 @@ class BarangController extends Controller
             return redirect()->route('home');
         }
     }
+    public function delete($id)
+{
+    $barang = Barang::find($id);
+
+    if ($barang) {
+        $barang->delete();
+        return redirect()->route('home')->with('success', 'Barang deleted successfully');
+    } else {
+        return redirect()->route('home')->with('error', 'Barang not found');
+    }
+}
+
 
 }
 

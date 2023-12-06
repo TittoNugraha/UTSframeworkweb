@@ -12,3 +12,5 @@ Route::get('/', [BarangController::class, 'home'])->name('home');
 
 Route::get('/edit-form/{id}', [BarangController::class, 'editForm'])->name('edit.form');
 Route::post('/edit-form/{id}', [BarangController::class, 'edit'])->name('edit');
+
+Route::get('/hapus/{id}', [BarangController::class, 'delete'])->name('barang.destroy');
